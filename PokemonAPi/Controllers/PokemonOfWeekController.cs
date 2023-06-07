@@ -3,37 +3,53 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PokemonAPi.Context;
 using PokemonAPi.Models;
+using System;
 
-namespace PokemonAPi.Controllers;
-[ApiController]
-[Authorize]
-public class PokemonOfWeekController : ControllerBase
+namespace PokemonAPi.Controllers
 {
-    private readonly PokemonsContext _context;
-
-    public PokemonOfWeekController(PokemonsContext context)
+    [ApiController]
+    [Authorize]
+    public class PokemonOfWeekController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly PokemonsContext _context;
 
-    [HttpGet]
-    [Route("api/pokemonofweek")]
-    public async Task<ActionResult<Pokemon>> GetPokemonOfWeek()
-    {
-        DateTime currenrDate = DateTime.Now;
-        DateTime startOfWeek = currenrDate.AddDays(-((int)currenrDate.DayOfWeek - 1));
-        DateTime endOfWeek = startOfWeek.AddDays(6);
-
-        var pokmonOfWeek = await _context.Ratings
-            .Where(r => r.Ratingdate >= startOfWeek && r.Ratingdate <= endOfWeek)
-            .OrderByDescending(r => r.Rating1)
-            .Select(r => r.Pokemon)
-            .FirstOrDefaultAsync();
-        if (pokmonOfWeek == null)
+        public PokemonOfWeekController(PokemonsContext context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        return Ok(pokmonOfWeek);
+        [HttpGet]
+        [Route("api/pokemonofweek")]
+        public IActionResult GetPokemonOfWeek()
+        {
+            DateTime currentDate = DateTime.Now.ToUniversalTime();
+            DateTime weekAgoDate = currentDate.AddDays(-7);
+
+            var pokemonRatings = _context.Ratings
+                .Include(r => r.Pokemon)
+                .Where(r => r.Ratingdate >= weekAgoDate && r.Ratingdate <= currentDate)
+                .GroupBy(r => r.PokemonId)
+                .Select(g => new
+                {
+                    PokemonId = g.Key,
+                    TotalRating = g.Sum(r => r.Rating1)
+                })
+                .OrderByDescending(g => g.TotalRating)
+                .FirstOrDefault();
+
+            if (pokemonRatings == null)
+            {
+                return NotFound("No pokemons found");
+            }
+
+            var pokemon = _context.Pokemons.FirstOrDefault(p => p.IdPokemon == pokemonRatings.PokemonId);
+
+            if (pokemon == null)
+            {
+                return NotFound("Pokemon not found");
+            }
+
+            return Ok(pokemon.NamePokemon);
+        }
     }
 }
