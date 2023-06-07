@@ -1,6 +1,6 @@
 namespace PokemonAPi.Controllers;
 
-public class PokemonOfDayController
+public class PokemonOfMonthController
 {
     
 }
