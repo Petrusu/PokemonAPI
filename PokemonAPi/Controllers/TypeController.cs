@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+/*using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonAPi.Context;
 using PokemonAPi.Models;
@@ -24,4 +24,4 @@ public class TypeController : ControllerBase
         var typeData = GetTypePokemon(); //вывод данных в api
         return Ok(typeData);
     }
-}
+}*/

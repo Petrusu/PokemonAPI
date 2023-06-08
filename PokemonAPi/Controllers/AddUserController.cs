@@ -23,6 +23,6 @@ public class AddUserController : ControllerBase
 
         userModel.Username = user.Username;
         userModel.Password = user.Password;
-        userModel.Role = "2";
+        userModel.Role = 2;
     }
 }

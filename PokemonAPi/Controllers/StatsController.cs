@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+/*using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonAPi.Context;
 using PokemonAPi.Models;
@@ -24,4 +24,4 @@ public class StatsController : ControllerBase
         var statsData = GetStats(); //вывод данных в api
         return Ok(statsData);
     }
-}
+}*/

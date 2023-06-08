@@ -36,6 +36,8 @@ public partial class PokemonsContext : DbContext
 
     public virtual DbSet<Rating> Ratings { get; set; }
 
+    public virtual DbSet<Roleuser> Roleusers { get; set; }
+
     public virtual DbSet<Stat> Stats { get; set; }
 
     public virtual DbSet<TypePokemon> TypePokemons { get; set; }
@@ -221,6 +223,18 @@ public partial class PokemonsContext : DbContext
                 .HasConstraintName("rating_user_id_fkey");
         });
 
+        modelBuilder.Entity<Roleuser>(entity =>
+        {
+            entity.HasKey(e => e.IdRole).HasName("roleusers_pkey");
+
+            entity.ToTable("roleusers");
+
+            entity.Property(e => e.IdRole).HasColumnName("id_role");
+            entity.Property(e => e.RoleName)
+                .HasColumnType("character varying")
+                .HasColumnName("role_name");
+        });
+
         modelBuilder.Entity<Stat>(entity =>
         {
             entity.HasKey(e => e.IdStats).HasName("stats_pkey");
@@ -257,12 +271,19 @@ public partial class PokemonsContext : DbContext
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Password).HasColumnName("password_");
-            entity.Property(e => e.Role)
-                .HasColumnType("character varying")
-                .HasColumnName("role_");
+            entity.Property(e => e.Role).HasColumnName("role_");
             entity.Property(e => e.Username)
                 .HasColumnType("character varying")
                 .HasColumnName("username");
+            entity.Property(e => e.WhatPokemonAreYou).HasColumnName("what_pokemon_are_you");
+
+            entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)
+                .HasForeignKey(d => d.Role)
+                .HasConstraintName("users_role__fkey");
+
+            entity.HasOne(d => d.WhatPokemonAreYouNavigation).WithMany(p => p.Users)
+                .HasForeignKey(d => d.WhatPokemonAreYou)
+                .HasConstraintName("users_what_pokemon_are_you_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);
