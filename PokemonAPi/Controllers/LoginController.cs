@@ -66,24 +66,24 @@ namespace PokemonAPi.Controllers
         
         private string CreateToken(int userId)
         {
-            
             var claims = new List<Claim>()
             {
                 // Список претензий (claims) - мы проверяем только id пользователя, можно добавить больше претензий.
                 new Claim("userId", Convert.ToString(userId)),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(TokenTimeoutMinutes),
-                signingCredentials: credentials
+                signingCredentials: cred
             );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
+
         }
     }
 }
