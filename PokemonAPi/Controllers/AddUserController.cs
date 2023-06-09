@@ -17,12 +17,17 @@ public class AddUserController : ControllerBase
 
     [HttpPost]
     [Route("api/adduser")]
-    public void AddUser(ConstUser user)
+    public IActionResult AddUser(ConstUser user)
     {
         User userModel = new User();
 
         userModel.Username = user.Username;
         userModel.Password = user.Password;
         userModel.Role = 2;
+
+        _context.Users.Add(userModel);
+        _context.SaveChanges();
+
+        return Ok("Users add.");
     }
 }

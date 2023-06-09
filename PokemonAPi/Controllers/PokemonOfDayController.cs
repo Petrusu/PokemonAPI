@@ -7,6 +7,7 @@ using PokemonAPi.Context;
 using PokemonAPi.Models;
 using System;
 using System.IO;
+using System.Text;
 
 namespace PokemonAPi.Controllers
 {
@@ -14,31 +15,44 @@ namespace PokemonAPi.Controllers
     [Authorize]
     public class PokemonOfDayController : ControllerBase
     {
-        private readonly string _csvFilePath = "pokemon.csv"; // Путь к CSV файлу
+        
         private string _pokemonOfTheDay;
         private DateTime _currentDay;
 
         [HttpGet]
         [Route("api/pokemonofday")]
-        public ActionResult<string> GetPokemonOfTheDay()
+        public async Task<ActionResult> GetPokemonOfTheDay()
         {
-            var currentDate = DateTime.Now.Date;
-
-            if (_currentDay == null || currentDate > _currentDay)
+            using (FileStream fileStream = new FileStream("pokemonofday/pokemonofday.txt", FileMode.Open))
             {
-                _currentDay = currentDate;
-                _pokemonOfTheDay = GetPokemonFromCsv();
-            }
+                DateTime currentDate = DateTime.Now.Date;
 
-            if (string.IsNullOrEmpty(_pokemonOfTheDay))
-            {
-                _pokemonOfTheDay = GetRandomPokemon();
-                WritePokemonToCsv(_pokemonOfTheDay);
-            }
+                string date = currentDate.ToString("dd/MM/yyyy");
+                byte[] bytes = new Byte[fileStream.Length];
+                await fileStream.ReadAsync(bytes, 0, bytes.Length);
 
-            return _pokemonOfTheDay;
+                string[] s = new string[2];
+                string line = Encoding.Default.GetString(bytes);
+                s = line.Split(' ');
+
+                if (date == s[0])
+                {
+                    fileStream.Close();
+                    return Ok(s[1]);
+                }
+                else
+                {
+                    fileStream.Close();
+                    FileStream newFileStream = new FileStream("pokemonofday/pokemonofday.txt", FileMode.Truncate);
+                    _pokemonOfTheDay = GetRandomPokemon();
+
+                    byte[] addnewpokemon = Encoding.Default.GetBytes(currentDate.ToString("dd/MM/yyyy") + " " + _pokemonOfTheDay);
+                    await newFileStream.WriteAsync(addnewpokemon, 0, addnewpokemon.Length);
+                    newFileStream.Close();
+                    return Ok(s[1]);
+                }
+            }
         }
-
         private string GetRandomPokemon()
         {
             using (var dbContext = new PokemonsContext())
@@ -50,41 +64,6 @@ namespace PokemonAPi.Controllers
                 return randomPokemon;
             }
         }
-
-        private string GetPokemonFromCsv()
-        {
-            if (!System.IO.File.Exists(_csvFilePath))
-            {
-                return null;
-            }
-
-            using (var reader = new StreamReader(_csvFilePath))
-            using (var csv = new CsvReader(reader, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
-            {
-                Delimiter = ",",
-            }))
-            {
-                if (csv.Read())
-                {
-                    return csv.GetField(0);
-                }
-            }
-
-            return null;
-        }
-
-        private void WritePokemonToCsv(string pokemon)
-        {
-            using (var writer = new StreamWriter(_csvFilePath))
-            using (var csv = new CsvWriter(writer, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
-            {
-                Delimiter = ",",
-                HasHeaderRecord = false
-            }))
-            {
-                csv.WriteField(pokemon);
-                csv.NextRecord();
-            }
-        }
+        
     }
 }
