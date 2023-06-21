@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using PokemonAPi;
 using PokemonAPi.Context;
+using PokemonAPi.Properties;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,18 @@ builder.Services.AddSwaggerGen(swagger =>
     });
     
 });
+// Регистрация политики авторизации
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserIdPolicy", policy =>
+    {
+        policy.Requirements.Add(new UserIdRequirement(1)); // Здесь 1 - требуемое значение userId
+    });
+});
+
+// Регистрация обработчика требования
+builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
+
 
 
 builder.Services.AddControllers();

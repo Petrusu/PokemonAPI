@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokemonAPi.Context;
@@ -5,7 +6,7 @@ using PokemonAPi.Models;
 
 namespace PokemonAPi.Controllers;
 [ApiController]
-[Authorize]
+[Authorize(Policy = "UserIdPolicy")]
 public class AddUserController : ControllerBase
 {
     private readonly PokemonsContext _context;
