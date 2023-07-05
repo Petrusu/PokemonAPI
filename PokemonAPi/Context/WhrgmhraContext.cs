@@ -5,13 +5,13 @@ using PokemonAPi.Models;
 
 namespace PokemonAPi.Context;
 
-public partial class PokemonsContext : DbContext
+public partial class WhrgmhraContext : DbContext
 {
-    public PokemonsContext()
+    public WhrgmhraContext()
     {
     }
 
-    public PokemonsContext(DbContextOptions<PokemonsContext> options)
+    public WhrgmhraContext(DbContextOptions<WhrgmhraContext> options)
         : base(options)
     {
     }
@@ -30,13 +30,9 @@ public partial class PokemonsContext : DbContext
 
     public virtual DbSet<Pokemon> Pokemons { get; set; }
 
-    public virtual DbSet<Pokemonegggroup> Pokemonegggroups { get; set; }
-
     public virtual DbSet<Pokemontype> Pokemontypes { get; set; }
 
     public virtual DbSet<Rating> Ratings { get; set; }
-
-    public virtual DbSet<Roleuser> Roleusers { get; set; }
 
     public virtual DbSet<Stat> Stats { get; set; }
 
@@ -46,17 +42,42 @@ public partial class PokemonsContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=Pokemons;Username=postgres;password=1812");
+        => optionsBuilder.UseNpgsql("Server=snuffleupagus.db.elephantsql.com;Database=whrgmhra;Username=whrgmhra;password=lUfSrKSOoSCJeaEPnU4P8wzkYnQZftDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder
+            .HasPostgresExtension("btree_gin")
+            .HasPostgresExtension("btree_gist")
+            .HasPostgresExtension("citext")
+            .HasPostgresExtension("cube")
+            .HasPostgresExtension("dblink")
+            .HasPostgresExtension("dict_int")
+            .HasPostgresExtension("dict_xsyn")
+            .HasPostgresExtension("earthdistance")
+            .HasPostgresExtension("fuzzystrmatch")
+            .HasPostgresExtension("hstore")
+            .HasPostgresExtension("intarray")
+            .HasPostgresExtension("ltree")
+            .HasPostgresExtension("pg_stat_statements")
+            .HasPostgresExtension("pg_trgm")
+            .HasPostgresExtension("pgcrypto")
+            .HasPostgresExtension("pgrowlocks")
+            .HasPostgresExtension("pgstattuple")
+            .HasPostgresExtension("tablefunc")
+            .HasPostgresExtension("unaccent")
+            .HasPostgresExtension("uuid-ossp")
+            .HasPostgresExtension("xml2");
+
         modelBuilder.Entity<Ability>(entity =>
         {
             entity.HasKey(e => e.IdAbility).HasName("ability_pkey");
 
             entity.ToTable("ability");
 
-            entity.Property(e => e.IdAbility).HasColumnName("id_ability");
+            entity.Property(e => e.IdAbility)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_ability");
             entity.Property(e => e.Ability1)
                 .HasColumnType("character varying")
                 .HasColumnName("ability");
@@ -68,7 +89,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("abilitypokemon");
 
-            entity.Property(e => e.IdAbilitypokemon).HasColumnName("id_abilitypokemon");
+            entity.Property(e => e.IdAbilitypokemon)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_abilitypokemon");
             entity.Property(e => e.IdAbility).HasColumnName("id_ability");
             entity.Property(e => e.IdPokemon).HasColumnName("id_pokemon");
 
@@ -87,7 +110,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("characteristics_");
 
-            entity.Property(e => e.IdCharacteristics).HasColumnName("id_characteristics");
+            entity.Property(e => e.IdCharacteristics)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_characteristics");
             entity.Property(e => e.Height).HasColumnName("height_");
             entity.Property(e => e.Weight).HasColumnName("weight_");
         });
@@ -110,7 +135,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("gender");
 
-            entity.Property(e => e.IdGender).HasColumnName("id_gender");
+            entity.Property(e => e.IdGender)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_gender");
             entity.Property(e => e.Gender1)
                 .HasColumnType("character varying")
                 .HasColumnName("gender");
@@ -122,7 +149,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("growth");
 
-            entity.Property(e => e.IdGrowth).HasColumnName("id_growth");
+            entity.Property(e => e.IdGrowth)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_growth");
             entity.Property(e => e.Growth1)
                 .HasColumnType("character varying")
                 .HasColumnName("growth");
@@ -134,7 +163,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("pokemon");
 
-            entity.Property(e => e.IdPokemon).HasColumnName("id_pokemon");
+            entity.Property(e => e.IdPokemon)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_pokemon");
             entity.Property(e => e.Gen).HasColumnName("gen");
             entity.Property(e => e.Gender).HasColumnName("gender");
             entity.Property(e => e.IdCharacteristics).HasColumnName("id_characteristics_");
@@ -164,32 +195,15 @@ public partial class PokemonsContext : DbContext
                 .HasConstraintName("pokemon_id_stats_fkey");
         });
 
-        modelBuilder.Entity<Pokemonegggroup>(entity =>
-        {
-            entity.HasKey(e => e.IdPokemonegg).HasName("pokemonegggroup_pkey");
-
-            entity.ToTable("pokemonegggroup");
-
-            entity.Property(e => e.IdPokemonegg).HasColumnName("id_pokemonegg");
-            entity.Property(e => e.IdEgggroup).HasColumnName("id_egggroup");
-            entity.Property(e => e.IdPokemon).HasColumnName("id_pokemon");
-
-            entity.HasOne(d => d.IdEgggroupNavigation).WithMany(p => p.Pokemonegggroups)
-                .HasForeignKey(d => d.IdEgggroup)
-                .HasConstraintName("pokemonegggroup_id_egggroup_fkey");
-
-            entity.HasOne(d => d.IdPokemonNavigation).WithMany(p => p.Pokemonegggroups)
-                .HasForeignKey(d => d.IdPokemon)
-                .HasConstraintName("pokemonegggroup_id_pokemon_fkey");
-        });
-
         modelBuilder.Entity<Pokemontype>(entity =>
         {
             entity.HasKey(e => e.IdPokemontype).HasName("pokemontype_pkey");
 
             entity.ToTable("pokemontype");
 
-            entity.Property(e => e.IdPokemontype).HasColumnName("id_pokemontype");
+            entity.Property(e => e.IdPokemontype)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_pokemontype");
             entity.Property(e => e.IdPokemon).HasColumnName("id_pokemon");
             entity.Property(e => e.IdType).HasColumnName("id_type");
 
@@ -208,7 +222,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("rating");
 
-            entity.Property(e => e.IdUserrating).HasColumnName("id_userrating");
+            entity.Property(e => e.IdUserrating)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_userrating");
             entity.Property(e => e.PokemonId).HasColumnName("pokemon_id");
             entity.Property(e => e.Rating1).HasColumnName("rating");
             entity.Property(e => e.Ratingdate).HasColumnName("ratingdate");
@@ -223,25 +239,15 @@ public partial class PokemonsContext : DbContext
                 .HasConstraintName("rating_user_id_fkey");
         });
 
-        modelBuilder.Entity<Roleuser>(entity =>
-        {
-            entity.HasKey(e => e.IdRole).HasName("roleusers_pkey");
-
-            entity.ToTable("roleusers");
-
-            entity.Property(e => e.IdRole).HasColumnName("id_role");
-            entity.Property(e => e.RoleName)
-                .HasColumnType("character varying")
-                .HasColumnName("role_name");
-        });
-
         modelBuilder.Entity<Stat>(entity =>
         {
             entity.HasKey(e => e.IdStats).HasName("stats_pkey");
 
             entity.ToTable("stats");
 
-            entity.Property(e => e.IdStats).HasColumnName("id_stats");
+            entity.Property(e => e.IdStats)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_stats");
             entity.Property(e => e.Attack).HasColumnName("attack");
             entity.Property(e => e.Chancetocache).HasColumnName("chancetocache");
             entity.Property(e => e.Eggcycle).HasColumnName("eggcycle");
@@ -257,7 +263,9 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("type_pokemons");
 
-            entity.Property(e => e.IdType).HasColumnName("id_type");
+            entity.Property(e => e.IdType)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id_type");
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .HasColumnName("type_");
@@ -269,21 +277,16 @@ public partial class PokemonsContext : DbContext
 
             entity.ToTable("users");
 
-            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.UserId)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("user_id");
             entity.Property(e => e.Password).HasColumnName("password_");
-            entity.Property(e => e.Role).HasColumnName("role_");
+            entity.Property(e => e.Role)
+                .HasColumnType("character varying")
+                .HasColumnName("role_");
             entity.Property(e => e.Username)
                 .HasColumnType("character varying")
                 .HasColumnName("username");
-            entity.Property(e => e.WhatPokemonAreYou).HasColumnName("what_pokemon_are_you");
-
-            entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Role)
-                .HasConstraintName("users_role__fkey");
-
-            entity.HasOne(d => d.WhatPokemonAreYouNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.WhatPokemonAreYou)
-                .HasConstraintName("users_what_pokemon_are_you_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);

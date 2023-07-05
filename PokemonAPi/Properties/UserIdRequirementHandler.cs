@@ -8,7 +8,7 @@ public class UserIdRequirementHandler : AuthorizationHandler<UserIdRequirement>
     {
         // Получаем userId из контекста пользователя
         var userId = context.User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
-        
+
         if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out int userIntId))
         {
             // Проверяем, совпадает ли userId с требуемым значением

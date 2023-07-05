@@ -13,7 +13,7 @@ public partial class Rating
 
     public int? Rating1 { get; set; }
 
-    public DateTime Ratingdate { get; set; }
+    public DateTime? Ratingdate { get; set; }
 
     public virtual Pokemon? Pokemon { get; set; }
 

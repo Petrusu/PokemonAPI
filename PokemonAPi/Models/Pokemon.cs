@@ -31,11 +31,7 @@ public partial class Pokemon
 
     public virtual Stat? IdStatsNavigation { get; set; }
 
-    public virtual ICollection<Pokemonegggroup> Pokemonegggroups { get; set; } = new List<Pokemonegggroup>();
-
     public virtual ICollection<Pokemontype> Pokemontypes { get; set; } = new List<Pokemontype>();
 
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -11,13 +11,7 @@ public partial class User
 
     public string? Password { get; set; }
 
-    public int? Role { get; set; }
-
-    public int? WhatPokemonAreYou { get; set; }
+    public string? Role { get; set; }
 
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
-
-    public virtual Roleuser? RoleNavigation { get; set; }
-
-    public virtual Pokemon? WhatPokemonAreYouNavigation { get; set; }
 }

@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<PokemonsContext>();
+builder.Services.AddScoped<WhrgmhraContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -49,12 +49,11 @@ builder.Services.AddSwaggerGen(swagger =>
     });
     
 });
-// Регистрация политики авторизации
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserIdPolicy", policy =>
     {
-        policy.Requirements.Add(new UserIdRequirement(1)); // Здесь 1 - требуемое значение userId
+        policy.Requirements.Add(new UserIdRequirement(1)); 
     });
 });
 

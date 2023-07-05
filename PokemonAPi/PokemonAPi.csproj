@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BCrypt.Net" Version="0.1.0" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="HiNetCloud.System.IdentityModel.Tokens.Jwt" Version="23.5.23.10" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />

@@ -84,3 +84,4 @@
 /home/sofya/Рабочий стол/Покемоны/PokemonAPi/PokemonAPi/bin/Debug/net7.0/NSwag.Core.dll
 /home/sofya/Рабочий стол/Покемоны/PokemonAPi/PokemonAPi/bin/Debug/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /home/sofya/Рабочий стол/Покемоны/PokemonAPi/PokemonAPi/bin/Debug/net7.0/CsvHelper.dll
+/home/sofya/Рабочий стол/Покемоны/PokemonAPi/PokemonAPi/bin/Debug/net7.0/BCrypt.Net.dll

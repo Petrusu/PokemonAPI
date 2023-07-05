@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "UHFw3qNTfTsJjKucPm/bYiEdWPMwrLEvOS+Fw9H46UQ89+c2BilKTxIcdsaB2WxkKw3UUHn1X5I8FQ+xskQHBw==",
+  "dgSpecHash": "yTU1Z4oecIV65DgwOrBVL1XjiR5mOSTbb1PvEMJ1bowgWP+7qtEQjkTTN6ldoxB4hlhpGktFRO6NRwpim/ZAHA==",
   "success": true,
   "projectFilePath": "/home/sofya/Рабочий стол/Покемоны/PokemonAPi/PokemonAPi/PokemonAPi.csproj",
   "expectedPackageFiles": [
     "/home/sofya/.nuget/packages/azure.core/1.24.0/azure.core.1.24.0.nupkg.sha512",
     "/home/sofya/.nuget/packages/azure.identity/1.6.0/azure.identity.1.6.0.nupkg.sha512",
+    "/home/sofya/.nuget/packages/bcrypt.net/0.1.0/bcrypt.net.0.1.0.nupkg.sha512",
     "/home/sofya/.nuget/packages/castle.core/5.1.0/castle.core.5.1.0.nupkg.sha512",
     "/home/sofya/.nuget/packages/csvhelper/30.0.1/csvhelper.30.0.1.nupkg.sha512",
     "/home/sofya/.nuget/packages/hinetcloud.system.identitymodel.tokens.jwt/23.5.23.10/hinetcloud.system.identitymodel.tokens.jwt.23.5.23.10.nupkg.sha512",
@@ -124,6 +125,16 @@
     "/home/sofya/.nuget/packages/system.xml.xmldocument/4.3.0/system.xml.xmldocument.4.3.0.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'BCrypt.Net 0.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "BCrypt.Net",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
     {
       "code": "NU1701",
       "level": "Warning",
